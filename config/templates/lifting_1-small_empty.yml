@@ -1,0 +1,68 @@
+# General
+experiment_name: lifting_1-small_empty
+run_name:
+logs_dir:
+checkpoints_dir:
+log_dir:
+checkpoint_dir:
+policy_path:
+checkpoint_path:
+
+# Learning
+batch_size: 32
+learning_rate: 0.01
+weight_decay: 0.0001
+grad_norm_clipping: 100
+num_input_channels: 4
+checkpoint_freq: 1000
+use_predicted_intention: false
+use_predicted_intention_frac: 0.9
+
+# DQN
+total_timesteps:
+exploration_frac: 0.1
+replay_buffer_size: 10000
+use_double_dqn: true
+discount_factors:
+final_exploration: 0.01
+learning_starts_frac: 0.025
+train_freq: 1
+target_update_freq: 1000
+
+# Simulation
+
+# Room configuration
+robot_config: [lifting_robot: 1]
+room_length: 1.0
+room_width: 0.5
+num_cubes: 10
+env_name: small_empty
+
+# State representation
+use_distance_to_receptacle_map: false
+distance_to_receptacle_map_scale: 0.25
+use_shortest_path_to_receptacle_map: true
+use_shortest_path_map: true
+shortest_path_map_scale: 0.25
+use_intention_map: false
+intention_map_encoding: ramp
+use_history_map: false
+use_intention_channels: false
+intention_channel_encoding: spatial
+intention_channel_nonspatial_scale: 0.025
+
+# Rewards
+use_shortest_path_partial_rewards: true
+success_reward: 1.0
+partial_rewards_scale: 2.0
+lifting_pointless_drop_penalty: 0.25
+obstacle_collision_penalty: 0.25
+robot_collision_penalty: 1.0
+
+# Misc
+use_shortest_path_movement: true
+use_partial_observations: true
+inactivity_cutoff_per_robot: 100
+random_seed:
+use_egl_renderer: true
+show_gui: false
