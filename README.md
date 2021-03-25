@@ -8,7 +8,7 @@ Jimmy Wu, Xingyuan Sun, Andy Zeng, Shuran Song, Szymon Rusinkiewicz, Thomas Funk
 
 *IEEE International Conference on Robotics and Automation (ICRA), 2021*
 
-[Project Page](https://spatial-intention-maps.cs.princeton.edu) | [PDF](https://spatial-intention-maps.cs.princeton.edu/paper.pdf) | [arXiv](https://arxiv.org/abs/2103.12710)
+[Project Page](https://spatial-intention-maps.cs.princeton.edu) | [PDF](https://spatial-intention-maps.cs.princeton.edu/paper.pdf) | [arXiv](https://arxiv.org/abs/2103.12710) | [Video](https://youtu.be/jJUZf_W0YMU)
 
 **Abstract:** The ability to communicate intention enables decentralized multi-agent robots to collaborate while performing physical tasks. In this work, we present spatial intention maps, a new intention representation for multi-agent vision-based deep reinforcement learning that improves coordination between decentralized mobile manipulators. In this representation, each agent's intention is provided to other agents, and rendered into an overhead 2D map aligned with visual observations. This synergizes with the recently proposed spatial action maps framework, in which state and action representations are spatially aligned, providing inductive biases that encourage emergent cooperative behaviors requiring spatial coordination, such as passing objects to each other or avoiding collisions. Experiments across a variety of multi-agent environments, including heterogeneous robot teams with different abilities (lifting, pushing, or throwing), show that incorporating spatial intention maps improves performance for different mobile manipulation tasks while significantly enhancing cooperative behaviors.
 
