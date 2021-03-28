@@ -30,14 +30,12 @@ class ReplayBuffer:
         self.capacity = capacity
         self.buffer = []
         self.position = 0
-        self.count = 0
 
     def push(self, *args):
         if len(self.buffer) < self.capacity:
             self.buffer.append(None)
         self.buffer[self.position] = Transition(*args)
         self.position = (self.position + 1) % self.capacity
-        self.count += 1
 
     def sample(self, batch_size):
         transitions = random.sample(self.buffer, batch_size)
