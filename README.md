@@ -25,7 +25,10 @@ We recommend using a [`conda`](https://docs.conda.io/en/latest/miniconda.html) e
 conda create -y -n my-conda-env python=3.7.10
 conda activate my-conda-env
 
-# Install pytorch (also installs numpy==1.19.2 as dependency)
+# Install mkl numpy
+conda install -y numpy==1.19.2
+
+# Install pytorch
 conda install -y pytorch==1.2.0 torchvision==0.4.0 cudatoolkit=10.0 -c pytorch
 
 # Install pip requirements
