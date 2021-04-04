@@ -17,8 +17,6 @@ def conv1x1(in_planes, out_planes, stride=1):
 
 
 class BasicBlock(nn.Module):
-    expansion = 1
-
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(BasicBlock, self).__init__()
         # Both self.conv1 and self.downsample layers downsample the input when stride != 1
@@ -51,7 +49,7 @@ class BasicBlock(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, num_input_channels=3, num_classes=1000, zero_init_residual=False):
+    def __init__(self, block, layers, num_input_channels=3, num_classes=1000):
         super(ResNet, self).__init__()
         self.inplanes = 64
         self.conv1 = nn.Conv2d(num_input_channels, 64, kernel_size=7, stride=2, padding=3,
@@ -67,7 +65,7 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2])
         self.layer4 = self._make_layer(block, 512, layers[3])
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
+        self.fc = nn.Linear(512, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -76,24 +74,17 @@ class ResNet(nn.Module):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
 
-        # Zero-initialize the last BN in each residual branch,
-        # so that the residual branch starts with zeros, and each residual block behaves like an identity.
-        # This improves the model by 0.2~0.3% according to https://arxiv.org/abs/1706.02677
-        if zero_init_residual:
-            for m in self.modules():
-                nn.init.constant_(m.bn2.weight, 0)
-
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
-        if stride != 1 or self.inplanes != planes * block.expansion:
+        if stride != 1 or self.inplanes != planes:
             downsample = nn.Sequential(
-                conv1x1(self.inplanes, planes * block.expansion, stride),
-                nn.BatchNorm2d(planes * block.expansion),
+                conv1x1(self.inplanes, planes, stride),
+                nn.BatchNorm2d(planes),
             )
 
         layers = []
         layers.append(block(self.inplanes, planes, stride, downsample))
-        self.inplanes = planes * block.expansion
+        self.inplanes = planes
         for _ in range(1, blocks):
             layers.append(block(self.inplanes, planes))
 
