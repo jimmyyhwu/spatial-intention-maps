@@ -178,7 +178,7 @@ def main(cfg):
     num_robot_groups = len(robot_group_types)
 
     # Policy
-    policy = utils.get_policy_from_cfg(cfg, robot_group_types, train=True)
+    policy = utils.get_policy_from_cfg(cfg, train=True)
 
     # Optimizers
     optimizers = []

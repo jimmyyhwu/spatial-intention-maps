@@ -117,6 +117,12 @@ python train.py config/experiments/ours/lifting_4-small_divider-ours.yml
 
 The training script will create a log directory and checkpoint directory for the new training run inside `logs/` and `checkpoints/`, respectively. Inside the log directory, it will also create a new config file called `config.yml`, which stores training run config variables and can be used to resume training or to load a trained policy for evaluation.
 
+For faster training, you can try `train_multiprocess.py`, which will run 8 environments in parallel to speed up training. For example:
+
+```bash
+python train_multiprocess.py config/experiments/ours/lifting_4-small_divider-ours.yml
+```
+
 ### Simulation Environment
 
 To interactively explore the simulation environment using our dense action space (spatial action maps), you can use `tools_simple_gui.py`, which will load an environment and allow you to click on the agent's local overhead map to select navigational endpoints (each pixel is an action). Some robot types (such as lifting) have a 2-channel action space, in which case you would use left click to move, and right click to move and then attempt an end effector action at the destination (such as lift or throw).
@@ -125,7 +131,11 @@ To interactively explore the simulation environment using our dense action space
 python tools_simple_gui.py
 ```
 
-Note that `tools_simple_gui.py` currently only supports single-agent environments. We will release a separate GUI that works for multi-agent environments.
+Note that `tools_simple_gui.py` currently only supports single-agent environments. For multi-agent environments, you can use `tools_interactive_gui.py` which has many more features, including control of multiple agents:
+
+```bash
+python tools_interactive_gui.py
+```
 
 ### Evaluation
 
@@ -238,7 +248,13 @@ cd aruco
 python server.py --debug
 ```
 
-As previously noted, `tools_simple_gui.py` currently only supports single-agent control. We will release a separate GUI that allows multi-agent control.
+As previously noted, `tools_simple_gui.py` currently only supports single-agent control.
+
+For multi-agent control, you can use `tools_interactive_gui.py`. After enabling `real` and providing values for `real_robot_indices` and `real_cube_indices`, you can run:
+
+```bash
+python tools_interactive_gui.py
+```
 
 ---
 
@@ -246,6 +262,12 @@ Once you have verified that manual control with `tools_simple_gui.py` works, you
 
 ```bash
 python enjoy.py --config-path logs/20201217T171233203789-lifting_4-small_divider-ours/config.yml --real --real-robot-indices 0,1,2,3 --real-cube-indices 0,1,3,5,6,7,8,9,10,11
+```
+
+For debugging and visualization, `tools_interactive_gui.py` allows you to load a trained policy and interactively run the policy one step at a time while showing Q-value maps and transitions. For example:
+
+```bash
+python tools_interactive_gui.py --config-path logs/20201217T171233203789-lifting_4-small_divider-ours/config.yml
 ```
 
 ## Citation

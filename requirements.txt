@@ -12,7 +12,7 @@ tqdm==4.49.0
 prompt-toolkit==3.0.7
 Cython==0.29.21
 opencv-python==4.4.0.42
-pyqt5==5.15.1
+pyqt5==5.15.4
 fpdf==1.7.2
 
 # Real robot

@@ -9,9 +9,9 @@ from envs import VectorEnv
 
 
 class DQNPolicy:
-    def __init__(self, cfg, robot_group_types, train=False, random_seed=None):
+    def __init__(self, cfg, train=False, random_seed=None):
         self.cfg = cfg
-        self.robot_group_types = robot_group_types
+        self.robot_group_types = [next(iter(g.keys())) for g in self.cfg.robot_config]
         self.train = train
         if random_seed is not None:
             random.seed(random_seed)

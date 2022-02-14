@@ -1,3 +1,4 @@
+import inspect
 from datetime import datetime
 from pathlib import Path
 
@@ -6,6 +7,7 @@ from matplotlib import cm
 from munch import Munch
 from PIL import Image
 from prompt_toolkit.shortcuts import radiolist_dialog
+from skimage.draw import circle_perimeter
 
 from envs import VectorEnv
 from policies import DQNPolicy, DQNIntentionPolicy
@@ -128,6 +130,26 @@ def get_state_output_visualization(state, output):
             panels.append(vertical_bar)
     return np.concatenate(panels, axis=1)
 
+def get_reward_image(reward, state_width, reward_image_height=12):
+    import cv2
+    reward_image = np.zeros((reward_image_height, state_width, 3), dtype=np.float32)
+    text = '{:+.02f}'.format(reward)
+    cv2.putText(reward_image, text, (state_width - 5 * len(text), 8), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (1, 1, 1))
+    return reward_image
+
+def get_transition_visualization(state=None, action=None, reward=0):
+    state_width = VectorEnv.get_state_width()
+    if state is None:
+        state = np.zeros((state_width, state_width, 3), dtype=np.float32)
+    state_vis = get_state_visualization(state)
+    if action is not None:
+        i, j = np.unravel_index(action % (state.shape[0] * state.shape[1]), (state.shape[0], state.shape[1]))
+        color = (1, 0, 0) if action < state_width * state_width else (0.5, 0, 0)
+        rr, cc = circle_perimeter(i, j, 2)
+        state_vis[rr, cc, :] = color
+    reward_image = get_reward_image(reward, state_vis.shape[1])
+    return np.concatenate((reward_image, state_vis), axis=0)
+
 def enlarge_image(image, scale_factor=4):
     return image.resize((scale_factor * image.size[0], scale_factor * image.size[1]), resample=Image.NEAREST)
 
@@ -158,35 +180,19 @@ def apply_misc_env_modifications(cfg_or_kwargs, env_name):
         cfg_or_kwargs['use_shortest_path_to_receptacle_map'] = False
 
 def get_env_from_cfg(cfg, **kwargs):
-    kwarg_list = []
-
-    # Room configuration
-    kwarg_list.extend(['robot_config', 'room_length', 'room_width', 'num_cubes', 'env_name'])
-
-    # State representation
-    kwarg_list.extend([
-        'use_distance_to_receptacle_map', 'distance_to_receptacle_map_scale',
-        'use_shortest_path_to_receptacle_map', 'use_shortest_path_map', 'shortest_path_map_scale',
-        'use_intention_map', 'intention_map_encoding', 'use_history_map',
-        'use_intention_channels', 'intention_channel_encoding', 'intention_channel_nonspatial_scale',
-    ])
-
-    # Rewards
-    kwarg_list.extend([
-        'use_shortest_path_partial_rewards', 'success_reward', 'partial_rewards_scale',
-        'lifting_pointless_drop_penalty', 'obstacle_collision_penalty', 'robot_collision_penalty',
-    ])
-
-    # Misc
-    kwarg_list.extend([
-        'use_shortest_path_movement', 'use_partial_observations',
-        'inactivity_cutoff_per_robot',
-        'random_seed', 'use_egl_renderer', 'show_gui',
-    ])
-
+    args_to_ignore = {'self',
+        'show_debug_annotations', 'show_occupancy_maps',
+        'real', 'real_robot_indices', 'real_cube_indices', 'real_debug'}
     final_kwargs = {}
-    for kwarg_name in kwarg_list:
-        final_kwargs[kwarg_name] = cfg[kwarg_name]
+    for arg_name in inspect.getfullargspec(VectorEnv.__init__).args:
+        if arg_name in args_to_ignore:
+            continue
+        if arg_name in cfg:
+            final_kwargs[arg_name] = cfg[arg_name]
+        else:
+            print('kwarg {} not found in config'.format(arg_name))
+            if arg_name not in {'use_robot_map', 'intention_map_scale', 'intention_map_line_thickness'}:
+                raise Exception
     final_kwargs.update(kwargs)
 
     # Additional modifications for real robot

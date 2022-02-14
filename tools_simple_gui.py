@@ -1,9 +1,13 @@
+import os
 import cv2
 import numpy as np
 
 from envs import VectorEnv
 import utils
 
+
+# Fix for macOS Big Sur
+os.environ['QT_MAC_WANTS_LAYER'] = '1'
 
 class SimpleGui:
     def __init__(self, env):

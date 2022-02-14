@@ -19,7 +19,7 @@ def main(args):
         env = utils.get_env_from_cfg(cfg, show_gui=True)
 
     # Create policy
-    policy = utils.get_policy_from_cfg(cfg, env.get_robot_group_types())
+    policy = utils.get_policy_from_cfg(cfg)
 
     # Run policy
     state = env.reset()

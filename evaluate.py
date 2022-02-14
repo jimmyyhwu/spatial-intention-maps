@@ -14,7 +14,7 @@ def run_eval(cfg, num_episodes=20):
     env = utils.get_env_from_cfg(cfg, random_seed=random_seed, use_egl_renderer=False)
 
     # Create policy
-    policy = utils.get_policy_from_cfg(cfg, env.get_robot_group_types(), random_seed=random_seed)
+    policy = utils.get_policy_from_cfg(cfg, random_seed=random_seed)
 
     # Run policy
     data = [[] for _ in range(num_episodes)]
