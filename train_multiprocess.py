@@ -150,6 +150,8 @@ class CollectWorker(Process):
         self.cfg = cfg
         self.worker_index = worker_index
         self.conn = conn
+        self.state = None
+        self.transition_tracker = None
 
         if conn is None:
             self._setup()
@@ -219,6 +221,7 @@ class Collector:
             for i in range(num_workers):
                 parent_conn, child_conn = Pipe()
                 worker = CollectWorker(self.cfg, worker_index=i, conn=child_conn)
+                worker.daemon = True  # Terminate worker if parent ends
                 worker.start()
                 self.workers.append(worker)
                 self.conns.append(parent_conn)
@@ -359,6 +362,7 @@ class Trainer:
         train_start_time = time.time()
         all_train_info = {}
         for i in range(self.num_robot_groups):
+            assert len(self.replay_buffers[i]) >= self.cfg.batch_size
             batch = self.replay_buffers[i].sample(self.cfg.batch_size)
             train_info = self._train(self.policy.policy_nets[i], self.target_nets[i], self.optimizers[i], batch, self.policy.apply_transform, self.cfg.discount_factors[i])
             for name, val in train_info.items():
@@ -374,6 +378,7 @@ class Trainer:
 
     def write_logs(self):
         # Visualize Q-network outputs
+        assert all(len(self.replay_buffers[i]) > 0 for i in range(self.num_robot_groups))
         random_state = [[random.choice(self.replay_buffers[i].buffer).state] for i in range(self.num_robot_groups)]
         _, info = self.policy.step(random_state, debug=True)
         for i in range(self.num_robot_groups):
@@ -418,6 +423,8 @@ class Trainer:
 def main(cfg):
     # Not implemented in multiprocess training
     assert not cfg.use_predicted_intention
+
+    # Set default multiprocess args if not specified
     if 'checkpoint_freq_mins' not in cfg:
         cfg.checkpoint_freq_mins = 30  # Checkpoint every 30 mins
     if 'num_parallel_collectors' not in cfg:
