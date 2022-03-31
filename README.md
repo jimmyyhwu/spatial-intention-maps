@@ -112,7 +112,7 @@ Here is what those policies look like when running in the PyBullet GUI (2x speed
 The [`config/experiments`](config/experiments) directory contains the template config files used for all experiments in the paper. To start a training run, you can provide one of the template config files to the `train.py` script. For example, the following will train a policy on the `SmallDivider` environment:
 
 ```bash
-python train.py config/experiments/ours/lifting_4-small_divider-ours.yml
+python train.py --config-path config/experiments/ours/lifting_4-small_divider-ours.yml
 ```
 
 The training script will create a log directory and checkpoint directory for the new training run inside `logs/` and `checkpoints/`, respectively. Inside the log directory, it will also create a new config file called `config.yml`, which stores training run config variables and can be used to resume training or to load a trained policy for evaluation.
@@ -120,7 +120,7 @@ The training script will create a log directory and checkpoint directory for the
 For faster training, you can try `train_multiprocess.py`, which will run 8 environments in parallel to speed up training. For example:
 
 ```bash
-python train_multiprocess.py config/experiments/ours/lifting_4-small_divider-ours.yml
+python train_multiprocess.py --config-path config/experiments/ours/lifting_4-small_divider-ours.yml
 ```
 
 ### Simulation Environment
