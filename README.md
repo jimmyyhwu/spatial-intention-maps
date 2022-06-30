@@ -6,7 +6,7 @@ This code release accompanies the following paper:
 
 Jimmy Wu, Xingyuan Sun, Andy Zeng, Shuran Song, Szymon Rusinkiewicz, Thomas Funkhouser
 
-*IEEE International Conference on Robotics and Automation (ICRA), 2021*
+*IEEE International Conference on Robotics and Automation (ICRA)*, 2021
 
 [Project Page](https://spatial-intention-maps.cs.princeton.edu) | [PDF](https://spatial-intention-maps.cs.princeton.edu/paper.pdf) | [arXiv](https://arxiv.org/abs/2103.12710) | [Video](https://youtu.be/sMTg9T1nWs4)
 
