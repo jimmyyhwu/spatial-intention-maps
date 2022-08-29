@@ -28,7 +28,7 @@ def create_markers(marker_type):
     sticker_spacing_mm = 3
     marker_length_mm = 1000 * marker_length
     scale_factor = marker_length_mm / (paper_params['mm_per_printed_pixel'] * marker_length_pixels)
-    stickers_per_row = int((paper_params['width_mm'] - 2 * paper_params['margin_mm']) / (sticker_length_mm + sticker_spacing_mm))
+    stickers_per_row = int((paper_params['width_mm'] - 2 * paper_params['margin_mm'] + sticker_spacing_mm) / (sticker_length_mm + sticker_spacing_mm))
     aruco_dict = cv2.aruco.Dictionary_get(utils.get_marker_dict_id())
 
     # Create PDF
@@ -38,8 +38,8 @@ def create_markers(marker_type):
         for i, marker_id in enumerate(marker_ids):
             image_path = str(Path(tmp_dir_name) / '{}.png'.format(marker_id))
             Image.fromarray(cv2.aruco.drawMarker(aruco_dict, marker_id, int(scale_factor * marker_length_pixels))).save(image_path)
-            center_x = (sticker_length_mm + sticker_spacing_mm) * (i % stickers_per_row + 1)
-            center_y = (sticker_length_mm + sticker_spacing_mm) * (i // stickers_per_row + 1)
+            center_x = paper_params['margin_mm'] + sticker_length_mm / 2 + (sticker_length_mm + sticker_spacing_mm) * (i % stickers_per_row)
+            center_y = paper_params['margin_mm'] + sticker_length_mm / 2 + (sticker_length_mm + sticker_spacing_mm) * (i // stickers_per_row)
             pdf.rect(
                 x=(center_x - sticker_length_mm / 2 - pdf.line_width / 2),
                 y=(center_y - sticker_length_mm / 2 - pdf.line_width / 2),
